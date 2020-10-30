@@ -47,25 +47,74 @@ class Numeros extends Component {
   seleccionarComic = (comic) => {
     this.setState({ favorito: comic });
   };
-
+  crearComic = () => {
+    var titulo = document.getElementById("cajatitulo").value;
+    var imagen = document.getElementById("cajaimagen").value;
+    var descripcion = document.getElementById("cajadescripcion").value;
+    var comic = {
+      titulo: titulo,
+      imagen: imagen,
+      descripcion: descripcion,
+    };
+    var comics = this.state.comics;
+    comics.push(comic);
+    this.setState({ comics: comics });
+  };
+  eliminarComic = (index) => {
+    var comics = this.state.comics;
+    comics.splice(index, 1);
+    this.setState({ comics: comics, favorito: null });
+  };
+  modComic = (index) => {
+    var titulo = document.getElementById("cajatitulo").value;
+    var imagen = document.getElementById("cajaimagen").value;
+    var descripcion = document.getElementById("cajadescripcion").value;
+    var comics = this.state.comics;
+    var comic = comics[index];
+    comic.titulo = titulo;
+    comic.imagen = imagen;
+    comic.descripcion = descripcion;
+    this.setState({ comics: comics });
+  };
   render() {
     return (
       <div>
-        {this.state.comics.map((comic, index) => {
-          return (
-            <Comic
-              key={index}
-              comic={comic}
-              seleccionarComic={this.seleccionarComic}
-            />
-          );
-        })}
+        <div style={{ margin: "auto", textAlign: "center" }}>
+          <label>Título: </label>
+          <input type="text" id="cajatitulo"></input>
+          <label>Imagen: </label>
+          <input type="text" id="cajaimagen"></input>
+          <label>Descripcion: </label>
+          <input type="text" id="cajadescripcion"></input>
+          <button onClick={this.crearComic}>Nuevo comic</button>
+        </div>
         {this.state.favorito && (
           <React.Fragment>
             <h1 style={{ color: "blue" }}>{this.state.favorito.titulo}</h1>
             <img src={this.state.favorito.imagen} />
           </React.Fragment>
         )}
+        {this.state.comics.map((comic, index) => {
+          return (
+            <React.Fragment key={index}>
+              <Comic
+                index={index}
+                comic={comic}
+                seleccionarComic={this.seleccionarComic}
+                eliminarComic={this.eliminarComic}
+              />
+              <button
+                style={{ backgroundColor: "blue", color: "white" }}
+                onClick={() => {
+                  this.modComic(index);
+                }}
+              >
+                {" "}
+                Modificar Comic{" "}
+              </button>
+            </React.Fragment>
+          );
+        })}
       </div>
     );
   }
